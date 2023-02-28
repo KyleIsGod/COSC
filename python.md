@@ -158,6 +158,12 @@ guess_number(23)
 ```
 Test = email.replace(“@”,”.”)
 Lst = test.split(“.”)
+
+or 
+
+Test = email.split('@')
+lst = '.'.join(Test)
+final = lst.split('.')
 ```
 # Dictionary
 myDict = {I:'10', W:'20', E:'30'}
@@ -166,9 +172,22 @@ they work with key, value pairs.
 for key in myDict:
 	print('{} = {}'.format(key, myDict[key]))
 ```
+# Iterating through a list
+counting number of times a letter appears
+It iterates through the new list, and counts each time a letter is used. For example, 1 would return one time. 8 would return two times.
+```
+string = '1234588asdfgjsfu'
+newlist = list(string)
 
+mydict = {}
 
-
+for x in newlist:
+	if x not in mydict:
+		mydict[x] = 1
+	else:
+		mydict[x] += 1
+print(mydict)
+```
 
 
 # Defining a function
