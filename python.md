@@ -159,8 +159,13 @@ guess_number(23)
 Test = email.replace(“@”,”.”)
 Lst = test.split(“.”)
 ```
-
-
+# Dictionary
+myDict = {I:'10', W:'20', E:'30'}
+they work with key, value pairs.
+```
+for key in myDict:
+	print('{} = {}'.format(key, myDict[key]))
+```
 
 
 
