@@ -242,7 +242,7 @@ newList = [item for item in range(0,100) if item % 2 == 0
 
 # Codewars good to know problems
 
-# Problem one
+## Problem one
 
 Build a function that returns an array of integers from n to 1 where n>0.
 
@@ -266,7 +266,7 @@ def reverse_seq(n):
 
 # Practice exam one QnAs
 
-# Question one
+## Question one
 Option one:
 
 Given the floatstr, which is a comma separated string of floats, return a list with each of the floats in the argument as elements in the list.
@@ -287,7 +287,7 @@ Option three: Map function
 ```
 return list(list(map(float,floatstr.split(',')))
 ```
-# Question two
+## Question two
 Option one:
 
 Given the variable length argument list, return the average of all the arguments as a float
@@ -301,7 +301,7 @@ def q1(*args):
       ave_num = result / len(args)
     return ave_num
 ```
-# Question three
+## Question three
 Option one:
 
 Given a list (lst) and a number of items (n), return a new list containing the last n entries in lst.
@@ -312,7 +312,7 @@ def q1(lst,n):
     newlst = lst[-n:]
     return newlst
 ```
-# Question four
+## Question four
 Option one:
 
 Given an input string, return a list containing the ordinal numbers of each character in the string in the order found in the input string.
@@ -330,7 +330,7 @@ Option two: List comprehension
 ```
 return [ord(x) for x in list(strng)]
 ```
-# Question five 
+## Question five 
 Option one:
 
 Given an input string, return a tuple with each element in the tuple containing a single word from the input string in order.
@@ -340,7 +340,7 @@ def q1(strng):
     return tuple(strng.split())
 ```
 
-# Question six
+## Question six
 Given a dictionary (catalog) whose keys are product names and values are product prices per unit and a list of tuples (order) of product names and quantities, compute and return the total value of the order.
 
 Example catalog:
@@ -385,7 +385,7 @@ Option three:
 def q6(catalog, order):
 	return sum(catalog[product]*quantity for product,quantity in order)
 ```
-# Question seven
+## Question seven
 Option one: 
 
 Given a filename, open the file and return the length of the first line in the file excluding the line terminator.
@@ -398,7 +398,7 @@ with open(filename) as fp:
 	return y
 ```
 
-# Question eight
+## Question eight
 
 Given a filename and a list, write each entry from the list to the file on separate lines until a case-insensitive entry of "stop" is found in the list. If "stop" is not found in the list, write the entire list to the file on separate lines.
 
@@ -411,7 +411,7 @@ def q1(filename,lst):
 			fp.write(f'{item}\n')
 ```
 
-# Question nine
+## Question nine
 
 Given the military time in the argument miltime, return a string containing the greeting of the day.
 
@@ -427,7 +427,7 @@ def q1(miltime):
         return "Good Night"
 ```
 
-# Question ten
+## Question ten
 
 Given the argument numlist as a list of numbers, return True if all numbers in the list are NOT negative. If any numbers in the list are negative, return False.
 
@@ -442,7 +442,7 @@ def q1(numlist):
 
 # Exam two QnAs
 
-# Question one
+## Question one
 Given a string of multiple words separated by single spaces, return a new string with the sentence reversed. The words themselves should remain as they are
 For example, given 'it is accepted as a masterpiece on strategy', the returned string should be 'strategy on masterpiece a as accepted is it'.
 ```
@@ -453,7 +453,7 @@ def q1(sentence):
         l.append(i)
     return(" ".join(l))
 ```
-# Question two
+## Question two
 Given a positive integer, return its string representation with commas seperating groups of 3 digits.
 
 For example, given 65535 the returned string should be '65,535'.
@@ -461,7 +461,7 @@ For example, given 65535 the returned string should be '65,535'.
 def q1(n):
     return(f"{n:,d}")
 ```
-# Question three
+## Question three
 Given two lists of integers, return a sorted list that contains all integers from both lists in descending order.
 
 For example, given [3,4,9] and [8,1,5] the returned list should be [9,8,5,4,3,1]. The returned list may contain duplicates.
@@ -471,7 +471,7 @@ def q1(lst0, lst1):
     test = sorted(L)
     return test[::-1]
 ```
-# Question four
+## Question four
 Given 3 scores in the range [0-100] inclusive, return 'GO' if the average score is greater than 50. Otherwise return 'NOGO'.
 ```
 def q1(s1,s2,s3):
@@ -482,7 +482,7 @@ def q1(s1,s2,s3):
         return "NOGO"
 ```
 
-# Question five
+## Question five
 Given an integer and limit, return a list of even multiples of the integer up to and including the limit.
 
 For example, if integer = 3 and limit = 30, the returned list should be [0,6,12,18,24,30]. Note, 0 is a multiple of any integer except 0 itself.
@@ -497,7 +497,7 @@ def q1(integer, limit):
     return test
 ```
 
-# Question six
+## Question six
 Given two filenames, return a list whose elements consist of line numbers for which the two files differ. The first line is considered line 0.
 
 ```
@@ -511,7 +511,7 @@ def q1(f0, f1):
             linenumber += 1
         return diffs
 ```
-# Question seven
+## Question seven
 As you iterate through the given list, return the first duplicate value you come across.
 
 For example, if given [5,7,9,1,3,7,9,5], the returned value should be 7.
@@ -535,7 +535,7 @@ def q1(lst):
 		else:
 			seen.add(i)
 ```
-# Question eight
+## Question eight
 Given a sentence as a string with words being separated by a single space, return the length of the shortest word.
 
 ```
@@ -551,7 +551,7 @@ def q1(strng):
 return len(min(strng.split(), key=len))
 ```
 
-# Question nine
+## Question nine
 Given an alphanumeric string, return the character whose ascii value is that of the integer represenation of all of the digits in the string concatenated in the order in which they appear.
 
 For example, given 'hell9oworld7', the returned character should be 'a' which has the ascii value of 97.
@@ -574,7 +574,7 @@ def q1(strng):
 			chars.append(c)
 	return chr(int(''.join(chars)))
 ```
-# Question ten
+## Question ten
 Given a list of positive integers sorted in ascending order, return the first non-consecutive value. If all values are consecutive, return None.
 
 For example, given [1,2,3,4,6,7], the returned value should be 6.
@@ -587,3 +587,86 @@ def q1(arr):
         i += 1
     return None
 ```
+
+# Runestone questions
+
+## Question one
+The textfile, travel_plans.txt, contains the summer travel plans for someone with some commentary. Find the total number of characters in the file and save to the variable num.
+
+```
+with open('travel_plans.txt') as fp:
+    test = str(len(fp.read()))
+    num = int(test)
+    print(num)
+```
+
+## Question two
+We have provided a file called emotion_words.txt that contains lines of words that describe emotions. Find the total number of words in the file and assign this value to the variable num_words.
+```
+num_words = 0
+with open('emotion_words.txt') as fp:
+    for line in fp:
+        words = line.split()
+        num_words += len(words)
+print("Number of words:")
+print(num_words)
+```
+
+## Question three
+Assign to the variable num_lines the number of lines in the file school_prompt.txt.
+```
+with open('school_prompt.txt') as fp:
+    num_lines = len(fp.readlines())
+    print(num_lines)
+```
+
+## Question four
+Assign the first 30 characters of school_prompt.txt as a string to the variable beginning_chars.
+```
+with open('school_prompt.txt') as fp:
+    beginning_chars = fp.read(30)
+```
+
+## Question five
+Using the file school_prompt.txt, assign the third word of every line to a list called three.
+```
+three = []
+with open('school_prompt.txt') as fp:
+    for i in fp.readlines():
+        three.append(i.split()[2])
+```
+
+## Question six
+Create a list called emotions that contains the first word of every line in emotion_words.txt
+```
+with open('emotion_words.txt') as fp:
+    
+    list = fp.readlines()
+tmp = ""
+word = ""
+emotions = []
+for i in list:
+    word = ''.join(i)
+    tmp = word.split()
+    emotions.append(tmp[0])
+    print(emotions)
+```
+
+## Question seven
+Assign the first 33 characters from the textfile, travel_plans.txt to the variable first_chars
+```
+with open('travel_plans.txt') as fp:
+    first_chars = fp.read(33)
+```
+## Question eight
+Using the file school_prompt.txt, if the character ‘p’ is in a word, then add the word to a list called p_words
+```
+p_words = []
+with open('school_prompt.txt') as fp:
+    lines = fp.read()
+    for i in lines.split():
+        if 'p' in i:
+            p_words.append(i)
+```
+
+
