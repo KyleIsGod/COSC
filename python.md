@@ -356,12 +356,19 @@ def q6(catalog, order):
                 total.append(catalog[key] * item[1])
     return sum(total)
 ```
+Option two:
 ```
-
+def q6(catalog, order):
+	total = 0
+	for product, quantity in order:
+		total += catalog[product] * quantity
+	return total
 ```
-
-
-
+Option three:
+```
+def q6(catalog, order):
+	return sum(catalog[product]*quantity for product,quantity in order)
+```
 # Question seven
 Option one: 
 
@@ -417,34 +424,150 @@ def q1(numlist):
             return False
 ```
 
+# Exam two QnAs
 
+# Question one
+Given a string of multiple words separated by single spaces, return a new string with the sentence reversed. The words themselves should remain as they are
+For example, given 'it is accepted as a masterpiece on strategy', the returned string should be 'strategy on masterpiece a as accepted is it'.
+```
+def q1(sentence):
+    s = sentence.split()[::-1]
+    l = []
+    for i in s:
+        l.append(i)
+    return(" ".join(l))
+```
+# Question two
+Given a positive integer, return its string representation with commas seperating groups of 3 digits.
 
+For example, given 65535 the returned string should be '65,535'.
+```
+def q1(n):
+    return(f"{n:,d}")
+```
+# Question three
+Given two lists of integers, return a sorted list that contains all integers from both lists in descending order.
 
+For example, given [3,4,9] and [8,1,5] the returned list should be [9,8,5,4,3,1]. The returned list may contain duplicates.
+```
+def q1(lst0, lst1):
+    L = lst0 + lst1
+    test = sorted(L)
+    return test[::-1]
+```
+# Question four
+Given 3 scores in the range [0-100] inclusive, return 'GO' if the average score is greater than 50. Otherwise return 'NOGO'.
+```
+def q1(s1,s2,s3):
+    sum = s1 + s2 + s3
+    if sum / 3 > 50:
+        return "GO"
+    else:
+        return "NOGO"
+```
 
+# Question five
+Given an integer and limit, return a list of even multiples of the integer up to and including the limit.
 
+For example, if integer = 3 and limit = 30, the returned list should be [0,6,12,18,24,30]. Note, 0 is a multiple of any integer except 0 itself.
+```
+def q1(integer, limit):
+    test = []
+    x = 0
+    while x <= limit:
+        if x % 2 == 0:
+            test.append(x)
+        x += integer
+    return test
+```
 
+# Question six
+Given two filenames, return a list whose elements consist of line numbers for which the two files differ. The first line is considered line 0.
 
+```
+def q1(f0, f1):
+    diffs = []
+    linenumber = 0
+    with open (f0) as file1, open(f1) as file2:
+        for l0,l1 in zip (file1,file2):
+            if l0 != l1:
+                diffs.append(linenumber)
+            linenumber += 1
+        return diffs
+```
+# Question seven
+As you iterate through the given list, return the first duplicate value you come across.
 
+For example, if given [5,7,9,1,3,7,9,5], the returned value should be 7.
+```
+def q1(lst):
+    seen = set()
+    for i in lst:
+        if i in seen:
+            return i
+        seen.add(i)
 
+    return -1
+```
+Option two:
+```
+def q1(lst):
+	seen = set()
+	for i in lst:
+		if i in seen:
+			return i
+		else:
+			seen.add(i)
+```
+# Question eight
+Given a sentence as a string with words being separated by a single space, return the length of the shortest word.
 
+```
+def q1(strng):
+    test = []
+    list = strng.split(' ')
+    for i in list:
+        test.append(len(i))
+    return min(test)
+```
+```
+def q1(strng):
+return len(min(strng.split(), key=len))
+```
 
+# Question nine
+Given an alphanumeric string, return the character whose ascii value is that of the integer represenation of all of the digits in the string concatenated in the order in which they appear.
 
+For example, given 'hell9oworld7', the returned character should be 'a' which has the ascii value of 97.
+```
+def q1(strng):
+    true = []
+    for i in strng:
+        if i.isdigit() == True:
+            true.append(i)
+        if i.isdigit() == False:
+            pass
+    test = chr(int(''.join(true)))
+    return test
+```
+```
+def q1(strng):
+	chars = []
+	for c in strng:
+		if c.isdigit():
+			chars.append(c)
+	return chr(int(''.join(chars)))
+```
+# Question ten
+Given a list of positive integers sorted in ascending order, return the first non-consecutive value. If all values are consecutive, return None.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+For example, given [1,2,3,4,6,7], the returned value should be 6.
+```
+def q1(arr):
+    i = 1
+    for x in arr:
+        if i < len(arr) and arr[i] - arr[i-1] != 1:
+            return arr[i]
+        i += 1
+    return None
+```
