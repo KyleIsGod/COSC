@@ -21,7 +21,7 @@
    	 
    	 
    	 
-   **ctrl + a takes you to beganning of command**
+   **ctrl + a takes you to begining of command**
    
    
    
@@ -45,18 +45,23 @@
  	 
  	 
    Additional Links for Research:
-	```
-	-https://linux.die.net/man - Online Man Pages. (Search wget as example)
-	-https://serverfault.com - Question and Answer site. May help you get command suggestions if you know what you’re trying to do. (Search "linux history"  	or "user input" as examples)
-	-https://ss64.com/bash - Breaks down options and has examples at the bottom usually. (Show "apt-get" as example)
-	-https://stackoverflow.com - Good resource when using Google for specific syntax questions. Utilize carefully because an answer you find may not answer  	YOUR question. (Search "grep" as example)
-	-https://tldp.org/LDP/abs/html/index.html - In depth explanations and good examples. (Show "Special Characters" and "Loops" as examples)
-	-http://bit.ly/USACYSscripting - Google Drive which includes helpful examples. (Show AWK)
-	-https://www.gnu.org/software/bash/manual/ - For advanced students who want to know how BASH works in the background.
-	-https://linuxize.com/post/bash-if-else-statement/ - Good examples of if/else statements.
-	-https://google.com - Make Google work FOR you by asking the right questions. (Google "How to take user input with Bash" as example)
+https://linux.die.net/man - Online Man Pages. (Search wget as example)
 
- (edited)
+https://serverfault.com - Question and Answer site. May help you get command suggestions if you know what you’re trying to do. (Search "linux history"  	or "user input" as examples)
+
+https://ss64.com/bash - Breaks down options and has examples at the bottom usually. (Show "apt-get" as example)
+
+https://stackoverflow.com - Good resource when using Google for specific syntax questions. Utilize carefully because an answer you find may not answer  	YOUR question. (Search "grep" as example)
+
+https://tldp.org/LDP/abs/html/index.html - In depth explanations and good examples. (Show "Special Characters" and "Loops" as examples)
+
+http://bit.ly/USACYSscripting - Google Drive which includes helpful examples. (Show AWK)
+
+https://www.gnu.org/software/bash/manual/ - For advanced students who want to know how BASH works in the background.
+
+https://linuxize.com/post/bash-if-else-statement/ - Good examples of if/else statements.
+
+https://google.com - Make Google work FOR you by asking the right questions. (Google "How to take user input with Bash" as example) (edited)
 
     
 ### Order of Evalution: The order the computer finds a command
@@ -492,9 +497,8 @@ This command finds only .txt FILES within the $HOME/1123 directory
 
 ### Question one part four
 
-Challenge Activity:
-
-List all files in $HOME/1123 that end in .txt. Omit the files containing a tilde (~) character.
+*Challenge Activity:
+List all files in $HOME/1123 that end in .txt. Omit the files containing a tilde (~) character.*
 ##### Solution one:
 ```
 find $HOME/1123/*".txt" | grep -v "~"
