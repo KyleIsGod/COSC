@@ -445,11 +445,193 @@ egrep "student|root" /etc/passwd | sed '/root/d'
   sub5
 ```
 
+# Day Four
 
+### For loops
 
+	The for loop iterates over a list of items and performs the given set of commands. The Bash for loop takes the following form: for item in [LIST] do [COMMANDS] done. 
+	Psuedo-Code
+		for item in [LIST]
+		do
+		[COMMANDS]
+		done
+	ie
+```
+#!/bin/bash
 
+for i in {1..10}
+do
+	echo $i
+done
+```
 
+The LIST can be a series of strings seperated by spaces, a range of numbers, output of a command, an array and so on. All loops are great for automating repetitive tasks!
 
+### Break and Continue IF statements
+	The break statement terminates the current loop and passes program control to the statement that follows the terminated statement. It is usually used to terminate the loop when a certain condition is met.
+	if [[ <condition> ]];then
+		break
+	fi
+	
+	The continue statement exits the current iteration of a loop and passes program control to the next iteration of the loop
+	if [[ <condition> ]];then
+		continue
+	fi
+
+### While and Until loops
+	The while loop is used to perform a given set of commands an unknown number of times as long as the given condition evaluates to true.
+
+```
+#!/bin/bash
+counter=1
+while [[ $counter -le 10 ]]
+do
+	echo $counter
+	((counter++))
+done
+echo "All done!"
+```
+	The until loop is used to execute a given set of commands as long as the given condition evaluates to false.
+
+```
+#!/bin/bash
+counter=1
+until [[ counter -gt 10 ]]
+do
+	echo $counter
+	((counter++))
+done
+echo "All done!"
+	echo
+```
+
+### Demo time
+
+```
+listo () {
+     for NAME in Yager Lindner Alley
+     do
+         echo $NAME
+     done
+ }
+ 
+ #listo
+ 
+ listo2 () {
+     names='Tenbusch Mills Regan'
+     for NAME in $names
+     do
+         echo $NAME
+     done
+ }
+ 
+ #listo2
+ 
+ range () {
+     for value in {1..5}
+     do
+         echo $value
+     done
+     echo "All done!"
+ }
+ 
+ #range
+  
+ rocket () {
+     for value in {10..1}
+     do
+         echo $value
+         sleep 1
+     done
+     echo "Team Rocket blasts off again!"
+ }
+ 
+ #rocket
+ 
+ countloop () {
+     for ((x=0;x<=5;x++))
+     do
+         echo "\$x is equal to $x"
+     done
+ }
+ 
+ #countloop
+ 
+ countloop2 () {
+     start=1
+     end=5
+     for ((i=start;i<=end;i++))
+     do
+         echo $i
+     done
+ }
+ 
+ #countloop2
+ 
+ lightyear () {
+     i=0
+     for (( ; ; ))
+     do
+         echo "iteration: $i - To Infinity and Beyond!"
+         ((i++))
+         if [[ $i -gt 9000 ]];then
+            echo "It's over 9000!!!"
+            break
+        fi
+    done
+}
+
+#lightyear
+
+thanksdad () {
+    for i in {1..10}
+    do
+        if [[ $i -eq 9 ]];then
+            continue
+        fi
+        echo $i
+        ((i++))
+    done
+    echo "Son: Dad don't"
+    echo "Dad: Well, looks like seven eight nine...RIP nine"
+    echo "Son: ::groans::"
+}
+
+#thanksdad
+
+beepbeep () {
+    jeep_owners=1
+    while [[ $jeep_owners -gt 0 ]]
+    do
+        echo "How many Jeep owners does it take to change a lightbulb?"
+        read -p "Enter your guess " guess
+
+        if [[ $guess -eq 0 ]];then
+            echo "None, they just buy a new Jeep instead."
+            ((jeep_owners--))
+        elif [[ $guess -lt 0 ]];then
+            echo "Invalid guess. Try again."
+        else
+            echo "Sorry, thats not the right answer."
+        fi
+    done
+    echo "Congratulations, all the Jeep owners have given up trying to change the lightbulb!"
+}
+
+#beepbeep
+
+autobots () {
+    counter=10
+    until [[ $counter -eq 1 ]]
+    do
+        echo $counter
+        ((counter--))
+    done
+    echo "'Til all are one -Autobots'"
+}
+
+autobots
+```
 
 
 
