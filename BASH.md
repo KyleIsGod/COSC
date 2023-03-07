@@ -966,7 +966,12 @@ The other fields in the new entries should match root's entry
 Users should be created in the order specified*
 
 ```
-
+rootline=$(head -1 $HOME/passwd)
+for x in {LARRY,CURLY,MOE} ; do
+   myuid=$(cat $HOME/$x.txt)
+   mkdir $HOME/$x
+   echo $rootline | awk -F: -v uu=$x -v ii=$myuid 'BEGIN{OFS=":"}{$1=uu;$3=ii;$4=ii;$6="$HOME/"uu}{print $0}' >> $HOME/passwd
+done
 ```
 
 ### Question twenty
