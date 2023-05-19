@@ -118,3 +118,51 @@
 35. The ___ conducts cyber operations to support the missions, plans, and priorities of the geographic and functional CCDRs.
         Cyber Combat Mission Force
 ```
+
+
+
+
+# Day 3 & 4
+
+```
+*1. Offensive cyberspace operations are intended to project _____ in and through grey and red cyberspace.
+        Power
+2. Key Terrain in Cyberspace is analogous to physical key terrain in that holding it affords a combatant a marked advantage
+        True
+*3. The 5 enablers for conducting OCO are _____, _____, _____, _____, and _____.
+        Authority, Access, Capability, Time, Intelligence
+*4. What are the 4 types of physical access?
+        Human Contact, Social Engineering, Spear Phishing, Direct Physical Access
+*5. An example of passive cyberspace reconnaissance is _____.
+        Searching Public Records
+6. The primary goal of _____ is to gain unsuspected, sustained, and unrestricted access to an information system.
+        Entrenchment
+7. Initial access is also called access and escalation as well as attack.
+        True
+8. OCO missions leverage adversary and enemy reliance on information, information technology, and data.
+        True
+9. Access is gained to targets by using cyberspace exploitation actions:
+        ISR - CYberspace, C-S&R
+*10. _____ is the practice of sending targeted emails with dangerous attachments to the target organization.
+        Spear Phishing
+*11. The _____ is the base for Mission Command, enables warfighting functions, and is foundational to Cyberspace Operations.
+        DODIN
+*12. DODIN Operations secure, _____, operate, _____, maintain, and sustain DOD cyberspace.
+        configure, extend
+*13. The DODIN has the 3rd largest block of IP addresses.
+        True
+14. Cyberspace Security actions are taken outside of protected cyberspace to prevent unauthorized access.
+        False
+*15. Cyberspace Defense is _____: include incident response to specific threats, exploitation, malicious cyberspace activity.
+        Reactive
+16. CNMF conducts DCO-IDM actions on the DoDIN when directed by USCYBERCOM, in coordination with JFHQ-DoDIN.
+        True
+17. The _____ is the core of the DODIN that facilitates the management of information resources.
+        DISN
+18. Cyberspace security measures include any action that results in a more secure system, including _____, _____, and _____.
+        USer Training, Pen Testing, Threat Emulation
+*19. Information sharing is not a challenge to the DODIN
+        False
+20. DCO IDM is conducted by Cyber Security Service Providers.
+        False
+```
